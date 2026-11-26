@@ -4,6 +4,12 @@ N = size(PD, 1);
 % Each edge (1 to 2N) connects to two neighbor edges (one at crossing)
 adj = zeros(2*N, 2); 
 
+%Exception case for the unknot
+if N == 0 
+    numLoops = 1; 
+    return; 
+end
+
 for k = 1:N %Each k is a crossing
     a = PD(k,1); b = PD(k,2); c = PD(k,3); d = PD(k,4);
     if state(k) == 0
