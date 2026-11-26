@@ -1,0 +1,168 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath, amssymb, float}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{minted}
+\setminted{breaklines}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{bm}
+
+\title{knots\_q3\_draft}
+\author{Narcis Staicu}
+\date{November 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The \textbf{Kauffman Bracket} is a polynomial invariant \footnote{It is not a knot invariant, as Reidemeister Move I introduces a crossing which alters it} which assings a Laurent polynomial to a knot diagram (not the knot itself). A Laurent polynomial is a polynomial that can contain negative powers (e.g. $A^2 + 3A^{-3}$).
+
+The Kauffman Bracket is written as:
+
+\[
+    \langle D \rangle
+\]
+
+where D represents the knot diagram.
+
+\hfill
+
+The main idea is to use \textbf{smoothings} to calculate the Kauffman Bracket, instead of calculating it from its complicated knot diagram.
+
+\hfill
+
+A smoothing is a way of removing a crossing from a knot diagram by reconnecting the four strands around the crossing in one of two possible ways, without allowing the strands to cross. 
+
+\hfill
+
+\subsection{Smoothings}
+
+There are two possible smoothings:
+\begin{itemize}
+    \item A-smoothing
+    \item B-smoothing
+\end{itemize}
+
+The A-smoothing contribution to the Kauffman Bracket is:
+
+\[
+    A \langle A\text{-smoothed diagram} \rangle
+\]
+
+The B-smoothing contribution to the Kauffman Bracket is:
+
+\[
+    A^{-1} \langle B\text{-smoothed diagram} \rangle
+\]
+
+\subsection{Rules}
+
+There are three Kauffman Bracket rules:
+\begin{enumerate}
+    \item The bracket of the unknot (no crossings) is $1$
+        \[
+            \langle \bigcirc \rangle = 1
+        \]
+    \item Replace a crossing with its two smoothings:
+        \[
+            \langle D \rangle = A \langle D_A \rangle + A^{-1} \langle D_B \rangle
+        \]
+
+        where $D_A$ is the diagram after A-smoothing, and $D_B$ is the diagram after B-smoothing.
+
+    \item Removing a disjoint circle multiplies the result by an expression:
+        \[
+            \delta = -A^2-A^{-2}
+        \]
+
+        For example, the bracket of two separate circles is:
+
+        \[
+            -A^2-A^{-2}
+        \]
+
+        Adding another disjoint circle would give:
+
+        \[
+            (-A^2-A^{-2})^2
+        \]
+
+        Formally, adding another disjoint circle:
+
+        \[
+            \langle D \sqcup \bigcirc \rangle = \delta \langle D \rangle
+        \]
+\end{enumerate}
+
+\subsubsection{Example}
+
+Consider a knot diagram with a single crossing.
+
+\hfill
+
+Applying Rule 1 gives:
+
+\[
+    \langle D \rangle = A \langle D_A \rangle + A^{-1} \langle D_B \rangle
+\]
+
+Then, suppose the A-smoothing produces one circle, and the B-smoothing produces two circles.
+We know:
+
+\[
+   \langle D_A \rangle = \langle \bigcirc \rangle = 1
+\]
+
+From rule 3, we also know:
+
+\[
+    \langle D_B \rangle = -A^2-A^{-2}
+\]
+
+Finally, from rule 2:
+
+\[
+   \langle D \rangle = A(1) + A^{-1}(-A^2-A^{-2})
+\]
+
+Expanding gives:
+
+\[
+    = A - A - A^{-3}
+\]
+
+Therefore:
+
+\[
+    \langle D \rangle = -A^{-3}
+\]
+
+\section{Implementing the Kauffman Bracket in a computer}
+
+\subsection{Recursive implementation}
+
+Since Rule 2 is already a recursive definition, it makes sense to implement the Kauffman Bracket in a computer recursively too.
+
+\subsubsection{Basic algorithm}
+
+A basic algorithm for calculating the Kauffman Bracket is:
+
+\begin{enumerate}
+    \item Receive a knot diagram as input via some data structure
+    \item Count the number of crossings
+    \item If there are no crossings, count the number of loops and return $\delta^{k-1}$, where $k$ is the number of disjoint circles.
+    \item If there are still crossings, choose one crossing.
+    \item Calculate the A-smoothing recursively
+    \item Calculate the B-smoothing recursively
+    \item Multiply the two results by $A$ and $A^{-1}$ respectively, then add them together.
+\end{enumerate}
+
+However, the issue with this is we still have not decided how to represent a knot diagram in a computer or how to calculate the two types of smoothings.
+
+\end{document}
